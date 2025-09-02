@@ -12,12 +12,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Environment variables
-API_ID = int(os.environ.get('API_ID'))
-API_HASH = os.environ.get('API_HASH')
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
 TIDAL_USERNAME = os.environ.get('TIDAL_USERNAME')
 TIDAL_PASSWORD = os.environ.get('TIDAL_PASSWORD')
+ADMIN_ID = int(os.environ.get('ADMIN_ID'))
 
-app = Client("my_bot", api_id=API_ID, api_hash=API_HASH)
+app = Client("my_bot", bot_token=BOT_TOKEN)
 
 async def run_command(command):
     """A helper function to run shell commands."""
@@ -31,11 +31,11 @@ async def run_command(command):
         raise Exception(f"Command failed with exit code {proc.returncode}\n{stderr.decode()}")
     return stdout.decode()
 
-@app.on_message(filters.command("start"))
+@app.on_message(filters.command("start") & filters.user(ADMIN_ID))
 async def start_command(_, message):
     await message.reply_text('Hello! I can help you download music from Tidal and upload to OneDrive. Use /download <Tidal URL> to begin.')
 
-@app.on_message(filters.command("download"))
+@app.on_message(filters.command("download") & filters.user(ADMIN_ID))
 async def download_command(_, message):
     if len(message.command) < 2:
         await message.reply_text('Please provide a Tidal URL after the command, e.g. /download <URL>')
@@ -108,7 +108,7 @@ async def download_command(_, message):
         await message.reply_text(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    if not all([API_ID, API_HASH, TIDAL_USERNAME, TIDAL_PASSWORD]):
+    if not all([BOT_TOKEN, TIDAL_USERNAME, TIDAL_PASSWORD, ADMIN_ID]):
         logger.error("Environment variables are not set. Please check your docker-compose.yml file.")
     else:
         app.run()
