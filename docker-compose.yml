@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: tidal-telegram-bot
+    restart: always
+    environment:
+      - BOT_TOKEN=
+      - TIDAL_USERNAME=
+      - TIDAL_PASSWORD=
+      - RCONE_DESTINATION=
+      - TIDAL_API_TOKEN=
+    volumes:
+      - ./downloads:/app/downloads
+      - ./rclone.conf:/root/.config/rclone/rclone.conf
