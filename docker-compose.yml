@@ -6,11 +6,10 @@ services:
     container_name: tidal-telegram-bot
     restart: always
     environment:
-      - API_ID=
-      - API_HASH=
+      - BOT_TOKEN=
       - TIDAL_USERNAME=
       - TIDAL_PASSWORD=
-      - RCLONE_DESTINATION=
+      - ADMIN_ID=
     volumes:
       - ./downloads:/app/downloads
       - ./rclone.conf:/root/.config/rclone/rclone.conf
